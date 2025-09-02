@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,22 +13,26 @@
             background-size: cover;
             background-attachment: fixed;
             color: #4a5568;
-            height: 100vh;
-            display: flex;
+            min-height: 100vh; /* Ensure background covers full height */
+            display: flex; /* Use flex to center card vertically and horizontally */
             justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            overflow: hidden; /* Changed to hidden to contain hearts */
+            align-items: flex-start; /* Align content to start, allowing scroll */
+            padding: 2rem 1rem; /* Add padding for mobile view */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+            overflow-y: auto; /* Allow vertical scrolling */
+            position: relative; /* For hearts-container to be absolute relative to body */
         }
         #hearts-container {
-            position: fixed;
+            position: absolute; /* Changed to absolute */
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100%; /* Cover the entire scrollable body */
             pointer-events: none;
-            overflow: hidden;
+            overflow: hidden; /* Keep heart animations within the container */
             z-index: 0;
+            min-height: 100%; /* Ensure it always covers at least the viewport height */
+            min-width: 100%; /* Ensure it always covers at least the viewport width */
         }
         .heart {
             position: absolute;
@@ -54,10 +58,11 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.15);
             padding: 2.5rem;
             max-width: 28rem;
-            width: 90%;
+            width: 100%; /* Use 100% width, limited by max-width */
             text-align: center;
             animation: fadeIn 1s ease-in-out;
             z-index: 1; /* Ensure card is above hearts */
+            margin: auto; /* Center the card horizontally */
         }
         .form-card {
             background-color: rgba(255, 255, 255, 0.8);
@@ -131,13 +136,32 @@
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
+
+        /* Specific adjustments for smaller screens */
+        @media (max-width: 640px) {
+            .container-card {
+                padding: 1.5rem; /* Smaller padding on small screens */
+                border-radius: 1.5rem;
+            }
+            .form-card, .results-card {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+            .text-3xl {
+                font-size: 2rem; /* Adjust heading size for mobile */
+            }
+            .text-lg {
+                font-size: 1rem; /* Adjust paragraph size for mobile */
+            }
+            .heart {
+                font-size: 1rem; /* Smaller hearts on mobile */
+            }
+        }
     </style>
 </head>
 <body>
 
-
     <div id="hearts-container"></div>
-
 
     <div id="main-content" class="container-card">
         <div id="form-container" class="form-card">
@@ -145,7 +169,6 @@
             <p class="mt-4 mb-8 text-md sm:text-lg text-gray-600">Enter your details and discover who you're truly meant to be with! 😉</p>
             
             <div id="message-box"></div>
-
 
             <form id="details-form" class="space-y-4 text-left">
                 <div>
@@ -180,7 +203,6 @@
             </form>
         </div>
 
-
         <div id="results-container" class="hidden results-card">
             <div class="flex justify-center items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-pink-500 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
@@ -204,7 +226,6 @@
         </div>
     </div>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('details-form');
@@ -216,7 +237,6 @@
             const pobInput = document.getElementById('pob');
             const professionInput = document.getElementById('profession');
             const messageBox = document.getElementById('message-box');
-
 
             // --- Heart Animation ---
             const heartsContainer = document.getElementById('hearts-container');
@@ -236,88 +256,44 @@
                         heart.remove();
                     }, 12000); // Remove after animation completes
                 };
-                setInterval(createHeart, 400); // Create a new heart every 400ms
+                setInterval(createHeart, 400); 
             }
             // --- End Heart Animation ---
 
-
             const quotes = [
-                "I love you without knowing how, or when, or from where. I love you simply, without problems or pride.",
-                "The best thing to hold onto in life is each other.",
-                "You know you're in love when you can't fall asleep because reality is finally better than your dreams.",
-                "To the world, you may be one person, but to one person you are the world.",
-                "I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.",
-                "You are my sun, my moon, and all of my stars.",
-                "If I had a flower for every time I thought of you, I could walk through my garden forever.",
-                "My heart is and always will be yours.",
-                "I want to be with you till my last page.",
-                "A true love story never ends.",
-                "I've fallen in love many times... always with you.",
-                "Love is a song that never ends.",
-                "We are shaped and fashioned by those we love.",
-                "The greatest thing you'll ever learn is just to love and be loved in return.",
-                "You are my today and all of my tomorrows."
+                "I love you without knowing how, or when, or from where. I love you simply, without problems or pride.", "The best thing to hold onto in life is each other.", "You know you're in love when you can't fall asleep because reality is finally better than your dreams.", "To the world, you may be one person, but to one person you are the world.", "I saw that you were perfect, and so I loved you. Then I saw that you were not perfect and I loved you even more.", "You are my sun, my moon, and all of my stars.", "If I had a flower for every time I thought of you, I could walk through my garden forever.", "My heart is and always will be yours.", "I want to be with you till my last page.", "A true love story never ends.", "I've fallen in love many times... always with you.", "Love is a song that never ends.", "We are shaped and fashioned by those we love.", "The greatest thing you'll ever learn is just to love and be loved in return.", "You are my today and all of my tomorrows."
             ];
 
+            const nehaDetails = { fullName: "Neha Tiwari", gender: "Female", dob: "03/02/1999", pob: "Lucknow", religion: "Hindu", profession: "Teacher" };
+            const abhayDetails = { fullName: "Abhay Mishra", gender: "Male", dob: "14/02/2000", pob: "Barabanki", religion: "Hindu", profession: "IT Engineer" };
 
-            const nehaDetails = {
-                fullName: "Neha Tiwari",
-                gender: "Female",
-                dob: "03/02/1999",
-                pob: "Lucknow",
-                religion: "Hindu",
-                profession: "Teacher"
+            // --- NEW DECOUPLED DATASETS ---
+
+            const professions = [ "Doctor", "Engineer", "Teacher", "Artist", "Scientist", "Lawyer", "Chef", "Writer", "Software Developer", "Architect" ];
+            const placesOfBirth = [ "Mumbai", "Delhi", "Bengaluru", "Chennai", "Kolkata", "Hyderabad", "Pune", "Ahmedabad", "Jaipur", "Lucknow", "Chandigarh", "Kochi", "Bhopal", "Patna", "Guwahati" ];
+            const religions = ["Hindu", "Muslim", "Buddhist", "Christian"];
+
+            const namesByReligion = {
+                hindu: {
+                    male: ["Arjun Sharma","Rohan Verma","Kunal Iyer","Siddharth Reddy","Vikram Choudhary","Rahul Mehta","Nikhil Bansal","Ankit Dubey","Harsh Tiwari","Manish Yadav","Suresh Joshi","Rajat Kapoor","Deepak Saxena","Aditya Mishra","Sandeep Ghosh","Pranav Kulkarni","Gaurav Shukla","Ramesh Patil","Amit Malhotra","Nitin Khatri","Vivek Trivedi","Shivam Bhargava","Ravi Deshmukh","Akhil Pandey","Krishna Nair","Karthik Chatterjee","Saurabh Jha","Rajeev Gupta","Pankaj Sinha","Anurag Agrawal","Lokesh Rao","Tarun Pillai","Yash Chauhan","Dinesh Menon","Vikas Rathore","Uday Choksi","Bhavesh Shetty","Mohan Saxena","Prem Lalwani","Navin Bajaj","Sameer Goyal","Rajesh Bhat","Ajay Soni","Ashok Venkatesh","Arvind Jain","Suraj Kaul","Mukesh Sehgal","Devendra Ranga","Hemant Mittal","Sunil Banerjee"],
+                    female: ["Priya Sharma","Sneha Verma","Pooja Iyer","Ankita Reddy","Kavya Choudhary","Ritu Mehta","Neha Bansal","Shweta Dubey","Komal Tiwari","Meena Yadav","Sunita Joshi","Isha Kapoor","Anjali Saxena","Radhika Mishra","Mitali Ghosh","Tanvi Kulkarni","Swati Shukla","Seema Patil","Simran Malhotra","Kiran Khatri","Megha Trivedi","Pallavi Bhargava","Jyoti Deshmukh","Aarti Pandey","Lakshmi Nair","Sapna Chatterjee","Bhavana Jha","Divya Gupta","Nisha Sinha","Payal Agrawal","Rajni Rao","Geeta Pillai","Vidya Chauhan","Reshma Menon","Kirti Rathore","Sonal Choksi","Bhavna Shetty","Rekha Saxena","Preeti Lalwani","Deepa Bajaj","Richa Goyal","Purnima Bhat","Kusum Soni","Veena Venkatesh","Anusha Jain","Smita Kaul","Savita Sehgal","Shalini Ranga","Mona Mittal","Usha Banerjee"]
+                },
+                muslim: {
+                    male: ["Ahmed Khan","Mohammed Ali","Irfan Qureshi","Salman Sheikh","Imran Ansari","Naeem Siddiqui","Faisal Malik","Yusuf Syed","Sameer Farooqi","Zubair Pathan","Aslam Baig","Nadeem Pasha","Wasim Mirza","Arif Hashmi","Rehan Warsi","Adil Qadri","Rashid Chaudhry","Tariq Nawaz","Shahid Rahman","Sohail Kazmi","Aamir Jilani","Farhan Abbasi","Noman Rizvi","Shahrukh Gill","Javed Dar","Arshad Naqvi","Khalid Usmani","Parvez Haider","Raheel Sabri","Sajid Chaudhary","Zeeshan Gauri","Owais Mir","Nasir Awan","Tanveer Saifi","Kamran Lodhi","Bilal Chaudhari","Azhar Poonawala","Majid Chishti","Shahbaz Siddiqi","Firoz Nizami","Hamid Khan","Imtiaz Abbasi","Tabrez Qadri","Munir Warsi","Zafar Malik","Saifuddin Shaikh","Ilyas Ansari","Sarfaraz Mirza","Rahim Dar","Aqeel Baig"],
+                    female: ["Fatima Khan","Ayesha Ali","Saba Qureshi","Zainab Sheikh","Nazia Ansari","Shabnam Siddiqui","Sania Malik","Rukhsar Syed","Aafreen Farooqi","Hina Pathan","Parveen Baig","Razia Pasha","Tabassum Mirza","Asiya Hashmi","Nafisa Warsi","Sabreen Qadri","Rubina Chaudhry","Nargis Nawaz","Tahira Rahman","Sadia Kazmi","Fouzia Jilani","Samina Abbasi","Nilofer Rizvi","Shagufta Gill","Lubna Dar","Farzana Naqvi","Shazia Usmani","Bushra Haider","Seher Sabri","Mariam Chishti","Amreen Lodhi","Humaira Gillani","Rida Abbasi","Sahar Rizvi","Nashra Mir","Fiza Shaikh","Yasmeen Poonawala","Hafsa Naqvi","Iqra Qadri","Javeria Mirza","Sumbul Warsi","Roohi Malik","Rukhsana Khan","Noor Jahan","Mehnaz Siddiqui","Aleena Ansari","Aqsa Farooqi","Sakeena Usmani","Madiha Hashmi","Zoya Kazmi"]
+                },
+                buddhist: {
+                    male: ["Tenzin Dorjee","Karma Wangchuk","Lobsang Norbu","Sonam Gyatso","Pema Rinchen","Jigme Dorji","Ngawang Tashi","Sangay Lama","Tashi Phuntsok","Dorjee Sherpa","Phurba Tamang","Choden Lama","Kunga Tharpa","Pasang Lobsang","Dawa Gyaltshen","Yeshi Wangdi","Tenzin Namgyal","Kelsang Dorjee","Ngodup Tsering","Chime Rinchen","Pelden Wangyal","Sonam Phurbu","Lhundup Dorji","Norbu Gyeltshen","Karma Choedon","Tshering Dorjee","Dorji Wangchuk","Ngawang Choden","Lobsang Tshering","Pema Dorji","Sangpo Lama","Phuntsok Norbu","Dawa Tamang","Tenzin Gyeltshen","Chogyal Dorjee","Tsering Wangdi","Jamphel Lama","Rigzin Norbu","Samten Dorji","Yeshi Gyaltshen","Ngawang Dorjee","Pema Tenzin","Kelsang Norbu","Karma Rinchen","Dorjee Tsering","Sonam Dorji","Namgyal Lama","Tshering Phuntsok","Lobsang Dorji","Tashi Wangchuk"],
+                    female: ["Pema Choden","Tenzin Dolma","Karma Lhamo","Sonam Deki","Dawa Dolkar","Choden Wangmo","Sangmo Tsering","Yeshi Dolma","Lhamo Yangchen","Pelden Chokyi","Dechen Dolkar","Tsering Lhamo","Chime Deki","Ngawang Choden","Kalsang Drolma","Norzin Wangmo","Pema Dolkar","Sangay Drolma","Tshering Dolma","Dolkar Wangmo","Tenzin Choden","Sonam Yangchen","Karma Dolkar","Lobsang Lhamo","Dawa Yangzom","Choden Dolma","Yeshi Lhamo","Pema Drolma","Kunsang Choden","Sangmo Dolkar","Tsering Yangchen","Pelden Lhamo","Dechen Choden","Karma Deki","Dolma Yangzom","Sonam Choden","Tenzin Yangchen","Chime Lhamo","Yeshi Wangmo","Lhamo Deki","Kalsang Choden","Pema Yangzom","Dawa Choden","Norzin Dolma","Dolkar Choden","Tsering Dolkar","Ngawang Lhamo","Choden Yangchen","Pelden Dolma","Sangmo Choden"]
+                },
+                christian: {
+                    male: ["John D’Souza","Peter Fernandes","Mark Rodrigues","Paul D’Costa","David Pereira","Samuel Gomes","Thomas Sequeira","Daniel Menezes","Joseph Pinto","Matthew D’Silva","Andrew Castelino","Stephen D’Mello","Anthony Dias","Gabriel Noronha","Benjamin Carvalho","Victor Barretto","Luke Fernandes","Simon Mascarenhas","Elijah Pinto","Philip D’Cruz","Noel Cardozo","Francis Rebello","Richard Coutinho","Gerald Rosario","Clifford Lobo","Julian Fernandes","Edward Gomes","Michael D’Souza","Albert Rodrigues","Christopher Menezes","Lawrence Pinto","Raymond Sequeira","Patrick Noronha","Jerome Castelino","Adrian Pereira","Dominic Fernandes","Ronald Pinto","Raphael D’Silva","Dennis Carvalho","Allan D’Costa","Felix Gomes","Ivan Rodrigues","George Sequeira","Nigel Mascarenhas","Clinton D’Mello","Austin Dias","Albert Rebello","Victor Coutinho","Elton Barretto"],
+                    female: ["Mary D’Souza","Grace Fernandes","Lydia Rodrigues","Anna D’Costa","Rachel Pereira","Sarah Gomes","Martha Sequeira","Elizabeth Menezes","Clara Pinto","Rebecca D’Silva","Naomi Castelino","Esther D’Mello","Irene Dias","Deborah Noronha","Priscilla Carvalho","Angela Barretto","Ruth Fernandes","Phoebe Mascarenhas","Julia Pinto","Joanna D’Cruz","Catherine Cardozo","Diana Rebello","Agnes Coutinho","Christine Rosario","Monica Lobo","Sophia Fernandes","Janet Gomes","Olivia D’Souza","Patricia Rodrigues","Teresa Menezes","Caroline Pinto","Susanna Sequeira","Gloria Noronha","Miriam Castelino","Evelyn Pereira","Clara Fernandes","Victoria Pinto","Jennifer D’Silva","Helena Carvalho","Christina D’Costa","Melody Gomes","Rosalind Rodrigues","Joan Sequeira","Amanda Mascarenhas","Celina D’Mello","Beatrice Dias","Lucy Rebello","Stella Coutinho","Cecilia Barretto","Annabelle Noronha"]
+                }
             };
+            
+            // --- END OF NEW DATASETS ---
 
-
-            const abhayDetails = {
-                fullName: "Abhay Mishra",
-                gender: "Male",
-                dob: "14/02/2000",
-                pob: "Barabanki",
-                religion: "Hindu",
-                profession: "IT Engineer"
-            };
-
-
-            // Data for random partners, with linked names and religions
-            const malePartners = [
-                { fullName: "Raj Sharma", pob: "Mumbai", religions: ["Hindu", "Jain"], professions: ["Doctor", "Pilot"] },
-                { fullName: "Ahmed Khan", pob: "Delhi", religions: ["Muslim"], professions: ["Architect", "Engineer"] },
-                { fullName: "Chris Thomas", pob: "Bengaluru", religions: ["Christian"], professions: ["Software Developer", "Scientist"] },
-                { fullName: "Amrit Singh", pob: "Chandigarh", religions: ["Sikh"], professions: ["Lawyer", "Accountant"] },
-                { fullName: "Siddharth Gupta", pob: "Pune", religions: ["Hindu"], professions: ["Data Analyst", "Consultant"] },
-                { fullName: "Vivek Deshmukh", pob: "Nagpur", religions: ["Hindu"], professions: ["Chef", "Restaurateur"] },
-                { fullName: "Irfan Ali", pob: "Kolkata", religions: ["Muslim"], professions: ["Graphic Designer", "Marketing Manager"] },
-                { fullName: "Rohit Verma", pob: "Jaipur", religions: ["Hindu"], professions: ["Architect", "Urban Planner"] },
-                { fullName: "Joseph Fernandez", pob: "Chennai", religions: ["Christian"], professions: ["Civil Engineer", "Contractor"] },
-                { fullName: "Arjun Reddy", pob: "Hyderabad", religions: ["Hindu"], professions: ["Filmmaker", "Journalist"] },
-                { fullName: "Amanjot Gill", pob: "Mohali", religions: ["Sikh"], professions: ["Software Developer", "Product Manager"] },
-                { fullName: "Faizan Shah", pob: "Lucknow", religions: ["Muslim"], professions: ["Writer", "Editor"] },
-                { fullName: "Suraj Kumar", pob: "Patna", religions: ["Hindu"], professions: ["Banker", "Financial Advisor"] },
-                { fullName: "Daniel Paul", pob: "Kochi", religions: ["Christian"], professions: ["Pilot", "Airline Captain"] }
-            ];
-
-
-            const femalePartners = [
-                { fullName: "Pooja Patel", pob: "Ahmedabad", religions: ["Hindu", "Jain"], professions: ["Writer", "Artist"] },
-                { fullName: "Fatima Syed", pob: "Hyderabad", religions: ["Muslim"], professions: ["Teacher", "Designer"] },
-                { fullName: "Maria Lopez", pob: "Goa", religions: ["Christian"], professions: ["Nurse", "Journalist"] },
-                { fullName: "Harleen Kaur", pob: "Amritsar", religions: ["Sikh"], professions: ["Professor", "Entrepreneur"] },
-                { fullName: "Ishita Shah", pob: "Surat", religions: ["Jain", "Hindu"], professions: ["Financial Analyst", "Business Owner"] },
-                { fullName: "Tanisha Singh", pob: "Delhi", religions: ["Hindu"], professions: ["Fashion Designer", "Stylist"] },
-                { fullName: "Ayesha Khan", pob: "Bangalore", religions: ["Muslim"], professions: ["Data Scientist", "Research Analyst"] },
-                { fullName: "Riya Sharma", pob: "Mumbai", religions: ["Hindu"], professions: ["Doctor", "Surgeon"] },
-                { fullName: "Natasha D'souza", pob: "Pune", religions: ["Christian"], professions: ["Lawyer", "Legal Advisor"] },
-                { fullName: "Simran Kaur", pob: "Ludhiana", religions: ["Sikh"], professions: ["Teacher", "Educator"] },
-                { fullName: "Anjali Das", pob: "Kolkata", religions: ["Hindu"], professions: ["Architect", "Interior Designer"] },
-                { fullName: "Zoya Malik", pob: "Delhi", religions: ["Muslim"], professions: ["Journalist", "Editor"] },
-                { fullName: "Sneha Reddy", pob: "Hyderabad", religions: ["Hindu"], professions: ["Software Engineer", "Developer"] },
-                { fullName: "Jennifer Wilson", pob: "Chennai", religions: ["Christian"], professions: ["Pilot", "Flight Attendant"] }
-            ];
-
-
-            // Helper function to calculate age from DOB in DD/MM/YYYY format
             const calculateAge = (dobString) => {
                 const [day, month, year] = dobString.split('/').map(Number);
                 const birthDate = new Date(year, month - 1, day);
@@ -330,111 +306,77 @@
                 return age;
             };
 
-
-            // Helper function to validate a date in DD/MM/YYYY format
             const isValidDate = (dobString) => {
                 const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
                 if (!dateRegex.test(dobString)) return false;
-
-
                 const [day, month, year] = dobString.split('/').map(Number);
                 const date = new Date(year, month - 1, day);
-                
-                const isDateValid = date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
-                return isDateValid;
+                return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
             };
 
-
-            // Helper function to compare two detail objects, ignoring case and whitespace
             const areDetailsEqual = (user, target) => {
-                return user.fullName.toLowerCase().trim() === target.fullName.toLowerCase().trim() &&
-                       user.gender.toLowerCase().trim() === target.gender.toLowerCase().trim() &&
-                       user.dob.toLowerCase().trim() === target.dob.toLowerCase().trim() &&
-                       user.pob.toLowerCase().trim() === target.pob.toLowerCase().trim() &&
-                       user.religion.toLowerCase().trim() === target.religion.toLowerCase().trim() &&
-                       user.profession.toLowerCase().trim() === target.profession.toLowerCase().trim();
+                return Object.keys(target).every(key => 
+                    user[key]?.toLowerCase().trim() === target[key]?.toLowerCase().trim()
+                );
             };
 
-
-            // Function to generate a random partner
+            // --- REWRITTEN FUNCTION TO GENERATE RANDOM PARTNER ---
             const generateRandomPartner = (userGender, userAge) => {
+                // Determine partner's gender
                 const futureGender = userGender.toLowerCase() === 'female' ? 'Male' : 'Female';
-                const partnerList = futureGender === 'Male' ? malePartners : femalePartners;
                 
-                const randomPartner = partnerList[Math.floor(Math.random() * partnerList.length)];
-                
+                // Pick random details from each dataset
+                const futureReligion = religions[Math.floor(Math.random() * religions.length)];
+                const futureProfession = professions[Math.floor(Math.random() * professions.length)];
+                const futurePob = placesOfBirth[Math.floor(Math.random() * placesOfBirth.length)];
+
+                // Pick a name based on the randomly selected religion and required gender
+                const religionKey = futureReligion.toLowerCase();
+                const genderKey = futureGender.toLowerCase();
+                const nameList = namesByReligion[religionKey][genderKey];
+                const futureFullName = nameList[Math.floor(Math.random() * nameList.length)];
+
+                // Calculate a random age and DOB
                 const minAge = Math.max(21, userAge - 4);
                 const maxAge = Math.min(50, userAge + 4);
                 const futureAge = Math.floor(Math.random() * (maxAge - minAge + 1)) + minAge;
-                
                 const currentYear = new Date().getFullYear();
                 const futureBirthYear = currentYear - futureAge;
                 const futureDob = new Date(futureBirthYear, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toLocaleDateString('en-GB');
 
-
+                // Return the complete, randomly generated partner object
                 return {
-                    fullName: randomPartner.fullName,
+                    fullName: futureFullName,
                     gender: futureGender,
                     dob: futureDob,
-                    pob: randomPartner.pob,
-                    religion: randomPartner.religions[Math.floor(Math.random() * randomPartner.religions.length)],
-                    profession: randomPartner.professions[Math.floor(Math.random() * randomPartner.professions.length)],
+                    pob: futurePob,
+                    religion: futureReligion,
+                    profession: futureProfession,
                     age: futureAge
                 };
             };
             
-            // Function to show a message box
             const showMessage = (message) => {
                 messageBox.textContent = message;
                 messageBox.style.display = 'block';
-                setTimeout(() => {
-                    messageBox.style.display = 'none';
-                }, 4000);
+                setTimeout(() => { messageBox.style.display = 'none'; }, 4000);
             };
 
-
-            // --- Form Validation Logic ---
-            nameInput.addEventListener('input', (event) => {
-                event.target.value = event.target.value.replace(/[^a-zA-Z\s]/g, '');
-            });
-
-
-            pobInput.addEventListener('input', (event) => {
-                event.target.value = event.target.value.replace(/[^a-zA-Z\s]/g, '');
-            });
-
-
-            professionInput.addEventListener('input', (event) => {
-                event.target.value = event.target.value.replace(/[^a-zA-Z\s]/g, '');
-            });
-
-
+            nameInput.addEventListener('input', (event) => { event.target.value = event.target.value.replace(/[^a-zA-Z\s]/g, ''); });
+            pobInput.addEventListener('input', (event) => { event.target.value = event.target.value.replace(/[^a-zA-Z\s]/g, ''); });
+            professionInput.addEventListener('input', (event) => { event.target.value = event.target.value.replace(/[^a-zA-Z\s]/g, ''); });
             dobInput.addEventListener('input', (event) => {
                 let value = event.target.value.replace(/[^0-9]/g, '');
-                
-                if (value.length > 2) {
-                    value = value.slice(0, 2) + '/' + value.slice(2);
-                }
-                if (value.length > 5) {
-                    value = value.slice(0, 5) + '/' + value.slice(5);
-                }
+                if (value.length > 2) value = value.slice(0, 2) + '/' + value.slice(2);
+                if (value.length > 5) value = value.slice(0, 5) + '/' + value.slice(5);
                 event.target.value = value.slice(0, 10);
             });
-            // --- End of Form Validation Logic ---
-
 
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-
-
                 const formData = new FormData(form);
-                const userDetails = {};
-                for (let [key, value] of formData.entries()) {
-                    userDetails[key] = value.trim();
-                }
+                const userDetails = Object.fromEntries(formData.entries());
 
-
-                // New validation for DOB and Age
                 if (!isValidDate(userDetails.dob)) {
                     showMessage("Please enter a valid date in DD/MM/YYYY format.");
                     return;
@@ -445,7 +387,6 @@
                     return;
                 }
 
-
                 let futurePartner;
                 if (areDetailsEqual(userDetails, nehaDetails)) {
                     futurePartner = { ...abhayDetails, age: calculateAge(abhayDetails.dob) };
@@ -455,19 +396,11 @@
                     futurePartner = generateRandomPartner(userDetails.gender, userAge);
                 }
 
-
-                // --- MODIFICATION: Update results heading ---
                 const searcherName = userDetails.fullName;
-                const searcherGender = userDetails.gender;
-                const resultsHeading = document.getElementById('results-heading');
-                
                 const possessiveName = searcherName.endsWith('s') ? `${searcherName}'` : `${searcherName}'s`;
-                const partnerTitle = searcherGender.toLowerCase() === 'male' ? "Future Wife" : "Future Husband";
-                resultsHeading.textContent = `${possessiveName} ${partnerTitle} Is...`;
-                // --- END MODIFICATION ---
+                const partnerTitle = userDetails.gender.toLowerCase() === 'male' ? "Future Wife" : "Future Husband";
+                document.getElementById('results-heading').textContent = `${possessiveName} ${partnerTitle} Is...`;
 
-
-                // Populate and show results
                 document.getElementById('futureName').textContent = futurePartner.fullName;
                 document.getElementById('futureGender').textContent = futurePartner.gender;
                 document.getElementById('futureAge').textContent = futurePartner.age;
@@ -475,21 +408,15 @@
                 document.getElementById('futurePob').textContent = futurePartner.pob;
                 document.getElementById('futureReligion').textContent = futurePartner.religion;
                 document.getElementById('futureProfession').textContent = futurePartner.profession;
-
-
-                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-                document.getElementById('loveQuote').textContent = `“${randomQuote}”`;
-
+                document.getElementById('loveQuote').textContent = `“${quotes[Math.floor(Math.random() * quotes.length)]}”`;
 
                 formContainer.classList.add('hidden');
                 resultsContainer.classList.remove('hidden');
             });
 
-
             goBackButton.addEventListener('click', () => {
                 formContainer.classList.remove('hidden');
                 resultsContainer.classList.add('hidden');
-                // Reset the heading when going back
                 document.getElementById('results-heading').textContent = 'Your Forever Match';
                 form.reset();
             });
